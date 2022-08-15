@@ -16,12 +16,14 @@ def main():
         url = base_url + v + ".json"
 
         res = requests.get(url).json()
+        print(res)
 
         for re in res:
             publishingOffice = re["publishingOffice"]
             reportDatetime = re["reportDatetime"]
 
-            timeSeries = re["0"]
+            timeSeries = re["timeSeries"]
+            # print(timeSeries)
 
             for time in timeSeries:
                 #降水確率など今回のターゲット以外は除外する
@@ -67,7 +69,7 @@ def main():
                             write_list.append(wave)
 
                             write_lists.append(write_list)
-    print(write_lists)
+    # print(write_lists)
 
 if __name__ == '__main__':
     main()
