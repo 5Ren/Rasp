@@ -13,7 +13,7 @@ if __name__ == "__main__":
             # "lon": "139.69167",
 
             ## 都市名で取得する場合
-            "q": "tokyo",
+            "q": "ueda",
 
             "appid": API_TOKEN,
             "units": "metric",
