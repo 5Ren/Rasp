@@ -9,6 +9,8 @@ class Laser:
 
 
     def laser_on(self) -> None:
+
+
         pass
 
     def laser_off(self) -> None:

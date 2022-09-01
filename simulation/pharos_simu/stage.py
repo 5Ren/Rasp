@@ -9,15 +9,20 @@ class Stage(serial.Serial):
         self.speed_R = 100
 
         print('Stage: __init__')
-        rec_path = os.path.dirname(os.path.abspath(__file__)) + '/simulation_csv/'
-        os.makedirs(rec_path, exist_ok=True)
+
+        with open('simu.csv', 'r+') as f:
+            f.truncate(0)
+
+        #
+        # rec_path = os.path.dirname(os.path.abspath(__file__)) + '/simulation_csv/'
+        # os.makedirs(rec_path, exist_ok=True)
         
 
 
-        l = ['x', 'y']
-        with open('simulation_csv/sample_writer.csv', 'w') as f:
-            writer = csv.writer(f)
-            writer.writerows(l)
+        # l = ['x', 'y']
+        # with open('simulation_csv/sample_writer.csv', 'w') as f:
+        #     writer = csv.writer(f)
+        #     writer.writerows(l)
 
     def __del__(self):
         pass
