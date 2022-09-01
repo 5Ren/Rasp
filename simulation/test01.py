@@ -1,12 +1,11 @@
 import time
+
 import tqdm
 import playsound
 
 from pharos_simu.laser import Laser
 from pharos_simu.stage import Stage
 from pharos_simu.scanner import Scanner
-
-
 
 
 def mysleep_sec(sleep_time_sec):
@@ -19,7 +18,6 @@ def mysleep_sec(sleep_time_sec):
 
 
 class LaserProcessor:
-
     CONTEC_BOARD_NAME = 'AIO000'
     CONTEC_LASER_CHANNEL = 0
     CONTEC_RA_STATUS_CHANNEL = 1
@@ -37,9 +35,13 @@ class LaserProcessor:
     tile_size_mm = None
     pitch_um = None
 
-
-
     def __init__(self):
+        self.temp_pitch = None
+        self.inner_f1_pitch = None
+        self.f2 = None
+        self.f1 = None
+        self.laser_spot_diameter = None
+        self.pitch = None
         self.set_config()
         self.__setup()
 
@@ -102,13 +104,29 @@ class LaserProcessor:
 
         # 照射設定
         self.laser_freq_kHz = 50 / 1
-        self.total_shot_numbers = 1  # 1か所の合計照射回数
+        # 1か所の合計照射回数
+        # 下の照射回数指定後に、pharos control APPの
+        # 「Configure　PP」→「Burst packet size」にも同じ値を入れること
+        self.total_shot_numbers = 1
 
+        # 焦点位置
         self.focus_z_um = 4190  # zスタート地点
 
-        self.pitch_um = 25  # ドット間隔
+        # 照射範囲
         self.tile_size_mm = 3
+
+        # 大きいスポットのピッチ
+        self.pitch = 25
+        # 大きいスポットの大きさ
+        self.f1 = 17
+        # レーザースポット径
+        self.laser_spot_diameter = 13
+
         #################################################
+
+        self.f2 = self.pitch - self.f1
+        self.inner_f1_pitch = self.f1 - self.laser_spot_diameter
+        self.temp_pitch = self.f1 + self.f2
 
     def run(self):
         print('\n------start------')
@@ -122,25 +140,36 @@ class LaserProcessor:
         shot_sec = self.total_shot_numbers / (self.laser_freq_kHz * 1000)
 
         # total hole numbers x, y
-        x_point_numbers = int(self.tile_size_mm * 1000 / pitch_um)
-        y_point_numbers = int(self.tile_size_mm * 1000 / pitch_um)
+        x_point_numbers = int(self.tile_size_mm * 1000 / (self.f1 + self.f2))
+        y_point_numbers = int(self.tile_size_mm * 1000 / (self.f1 + self.f2))
 
         # move scanner 0 to pattern center
         scanner_x_shift_um = int(self.tile_size_mm / 2) * 1000
         scanner_y_shift_um = int(self.tile_size_mm / 2) * 1000
 
-
         for y in tqdm.tqdm(range(y_point_numbers)):
             for x in range(x_point_numbers):
-
                 # スキャナ移動
-                scanner_x_position_um = x * pitch_um - scanner_x_shift_um
-                scanner_y_position_um = y * pitch_um - scanner_y_shift_um
-
+                scanner_x_position_um = x * self.temp_pitch - scanner_x_shift_um
+                scanner_y_position_um = y * self.temp_pitch - scanner_y_shift_um
 
                 scanner1.move_position_absolute(scanner_x_position_um,
                                                 scanner_y_position_um)
+                laser1.laser_on()
+                mysleep_sec(shot_sec)
+                laser1.laser_off()
 
+                scanner1.move_position_relative(self.inner_f1_pitch, 0)
+                laser1.laser_on()
+                mysleep_sec(shot_sec)
+                laser1.laser_off()
+
+                scanner1.move_position_relative(0, -self.inner_f1_pitch)
+                laser1.laser_on()
+                mysleep_sec(shot_sec)
+                laser1.laser_off()
+
+                scanner1.move_position_relative(-self.inner_f1_pitch, 0)
                 laser1.laser_on()
                 mysleep_sec(shot_sec)
                 laser1.laser_off()
@@ -155,5 +184,3 @@ if __name__ == '__main__':
         print('STOP!')
     finally:
         laser_processor.clean_up()
-
-
