@@ -7,9 +7,6 @@ class Laser:
         self.laser_channel = laser_channel
         self.ra_channel = ra_channel
 
-        rec_path = os.path.dirname(os.path.abspath(__file__)) + '/simulation_csv/'
-        os.makedirs(rec_path, exist_ok=True)
-
 
     def laser_on(self) -> None:
         pass
