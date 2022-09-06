@@ -11,13 +11,15 @@ class Scanner:
         pass
 
     def move_to_zero(self) -> int:
-        pass
-
+        self.write_csv(0, 0)
+        print('Stage: move to zero')
     def move_position_relative(self, x: int, y: int) -> int:
-        pass
-
+        data = self.tail()
+        x_posi = x + int(data[0])
+        y_posi = y + int(data[1])
+        self.write_csv(x_posi, y_posi)
     def move_position_absolute(self, x: int, y: int) -> int:
-        pass
+        self.write_csv(x, y)
 
     def get_position(self) -> tuple[int, int, int]:
         pass

@@ -15,15 +15,15 @@ class Stage(serial.Serial):
             f.truncate(0)
             f.close()
 
-        list_data = ['x', 'y']
-        with open(self.path, 'a', newline='') as f_object:
-            # Pass the CSV  file object to the writer() function
-            writer_object = writer(f_object)
-            # Result - a writer object
-            # Pass the data in the list as an argument into the writerow() function
-            writer_object.writerow(list_data)
-            # Close the file object
-            f_object.close()
+        # list_data = ['x', 'y']
+        # with open(self.path, 'a', newline='') as f_object:
+        #     # Pass the CSV  file object to the writer() function
+        #     writer_object = writer(f_object)
+        #     # Result - a writer object
+        #     # Pass the data in the list as an argument into the writerow() function
+        #     writer_object.writerow(list_data)
+        #     # Close the file object
+        #     f_object.close()
 
         self.reset_all_axis()
 

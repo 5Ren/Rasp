@@ -9,12 +9,7 @@ from pharos_simu.scanner import Scanner
 
 
 def mysleep_sec(sleep_time_sec):
-    sleep_time_ns = sleep_time_sec * 10 ** 9
-    start = time.perf_counter_ns()
-
-    # 現在の時刻と開始時の時刻の差が、スリープさせる時間より小さい場合ループ
-    while (time.perf_counter_ns() - start) < sleep_time_ns:
-        pass
+    pass
 
 
 class LaserProcessor:
@@ -113,7 +108,7 @@ class LaserProcessor:
         self.focus_z_um = 4190  # zスタート地点
 
         # 照射範囲
-        self.tile_size_mm = 3
+        self.tile_size_mm = 0.5
 
         # 大きいスポットのピッチ
         self.pitch = 25
@@ -155,6 +150,7 @@ class LaserProcessor:
 
                 scanner1.move_position_absolute(scanner_x_position_um,
                                                 scanner_y_position_um)
+
                 laser1.laser_on()
                 mysleep_sec(shot_sec)
                 laser1.laser_off()
@@ -173,6 +169,7 @@ class LaserProcessor:
                 laser1.laser_on()
                 mysleep_sec(shot_sec)
                 laser1.laser_off()
+
 
 
 if __name__ == '__main__':
