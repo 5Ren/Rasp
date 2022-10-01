@@ -1,3 +1,5 @@
+import ctypes
+
 prog_no = int(25)
 
 # prog_no_bi = format(prog_no, 'b')
@@ -17,3 +19,6 @@ print(f'4th: {int(prog_no_bi[-4])}')
 print(f'5th: {int(prog_no_bi[-5])}')
 print(f'6th: {int(prog_no_bi[-6])}')
 print(f'7th: {int(prog_no_bi[-7])}')
+
+a = ctypes.c_ubyte(int(prog_no_bi[-1]))
+print(a)
