@@ -8,7 +8,7 @@ class Moter(serial.Serial):
     sm_pulse = str
 
     def __init__(self, port: str, resolution_deg: float):
-        self.dino = serial.Serial(port, 9600)
+        self.dino = serial.Serial(port, 19200)
         self.sm_resolution = resolution_deg
 
     def __del__(self):
