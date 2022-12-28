@@ -113,10 +113,13 @@ def attack_row_and_column(tile_data):
                 tile_data[i] = candidate_and_value[1]
     return tile_data
 
-def attack_box_num(tile_data):
 
-
-
+def attack_box(tile_data):
+    row_data = split_row(tile_data=tile_data)
+    column_data = split_column(tile_data=tile_data)
+    square_data = split_square(tile_data=tile_data)
+    for num in range(9):
+        if row_data[num]
 
 if __name__ == '__main__':
     # 初期化
