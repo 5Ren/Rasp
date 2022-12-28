@@ -94,6 +94,31 @@ def judgment_square(no):
     return square_no
 
 
+def attack_row_and_column(tile_data):
+    tile_data = tile_data
+    for i in range(len(tile_data)):
+        # 要素が0のものに入る候補を決めていくよ
+        if tile_data[i] == 0:
+            # 横軸で入りうるもの
+            row_data = split_row(tile_data=tile_data)
+            candidate_row_value = set(row_data[i // 9]) ^ set(basic_list)
+            # 縦軸で入りうるもの
+            column_data = split_column(tile_data=tile_data)
+            candidate_column_value = set(column_data[i % 9]) ^ set(basic_list)
+            # ボックスで入りうるもの
+            square_data = split_square(tile_data=tile_data)
+            candidate_square_value = set(square_data[judgment_square(no=i)]) ^ set(basic_list)
+            # すべての候補のマージ
+            candidate_and_value = list(set(candidate_row_value) & set(candidate_column_value)
+                                       & set(candidate_square_value))
+            # 絞られた候補を代入
+            if len(candidate_and_value) == 2:
+                tile_data[i] = candidate_and_value[1]
+                key = [j for j, v in coordinate_dict.items() if v == i]
+                print(f'マスの{key}に、{candidate_and_value[1]}入れます。')
+                print_tile(tile_data=tile_data, label=str(i))
+    return tile_data
+
 
 if __name__ == '__main__':
     sudoku_list = [0] * 9 ** 2
@@ -107,7 +132,7 @@ if __name__ == '__main__':
         key = coordinate_list[(tile % 9)] + str(tile // 9 + 1)
         coordinate_dict[key] = tile
 
-    # print_tile(tile_data=sudoku_list, label='初期化した')
+    print_tile(tile_data=sudoku_list, label='初期化した')
 
     # 既知のマスを設定
     known_values = {'b1': 5, 'd1': 1, 'f1': 8, 'h1': 9,
@@ -132,29 +157,10 @@ if __name__ == '__main__':
     # error_check(tile_data=sudoku_list)
 
     while total < 45 * 9:
-        for i in range(len(sudoku_list)):
-            # 要素が0のものに入る候補を決めていくよ
-            if sudoku_list[i] == 0:
-                # 横軸で入りうるもの
-                row_data = split_row(tile_data=sudoku_list)
-                candidate_row_value = set(row_data[i // 9]) ^ set(basic_list)
-                # 縦軸で入りうるもの
-                column_data = split_column(tile_data=sudoku_list)
-                candidate_column_value = set(column_data[i % 9]) ^ set(basic_list)
-                # ボックスで入りうるもの
-                square_data = split_square(tile_data=sudoku_list)
-                candidate_square_value = set(square_data[judgment_square(no=i)]) ^ set(basic_list)
-                # すべての候補のマージ
-                candidate_and_value = list(set(candidate_row_value) & set(candidate_column_value) & set(candidate_square_value))
-                # 絞られた候補を代入
-                if len(candidate_and_value) == 2:
-                    sudoku_list[i] = candidate_and_value[1]
-                    key = [j for j, v in coordinate_dict.items() if v == i]
-                    print(f'マスの{key}に、{candidate_and_value[1]}入れます。')
-                    print_tile(tile_data=sudoku_list, label=str(i))
+        sudoku_list = attack_row_and_column(tile_data=sudoku_list)
 
         total = sum(sudoku_list)
-        print(f'{i}番目にして、Total {total}。')
+        print(f'Total {total}')
 
     error_check(tile_data=sudoku_list)
     print('終わった。ご苦労さま。')
