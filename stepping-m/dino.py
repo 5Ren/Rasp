@@ -35,8 +35,14 @@ class Motor(serial.Serial):
         deg = self.real_position % 360
         if deg > 180:
             self.rotate_cw(cw_deg=float(360.0 - deg))
+            self.real_position = 0
+            self.ideal_position = 0
         elif deg <= 180:
             self.rotate_ccw(ccw_deg=float(deg))
+            self.real_position = 0
+            self.ideal_position = 0
+        else:
+            print('Value Error')
 
     def rotate_cw(self, cw_deg: float) -> bool:
         if cw_deg > 0.0:
@@ -65,6 +71,9 @@ class Motor(serial.Serial):
 
     def rotate_ccw(self, ccw_deg: float):
         self.rotate_cw(cw_deg=-ccw_deg)
+
+    def get_now_position(self) -> float:
+        return self.ideal_position
 
     def deg_set(self, degree: float):
         self.ss1pulse, mod = divmod(degree, self.ss1_deg)
