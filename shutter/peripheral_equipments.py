@@ -2,7 +2,7 @@ import serial
 import time
 
 class Periphaerals(serial.Serial):
-    def __init__(self, port: str):
+    def __init__(self, port: str) -> None:
         baudrate = 19200
         try:
             super().__init__(port, baudrate)
@@ -10,25 +10,41 @@ class Periphaerals(serial.Serial):
         except:
             print("エラー：ポートが開けませんでした。")
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.close()
 
-    def shutter_on(self):
-        self.run_command(mode='a', command='1')
+    def shutter_on(self) -> bool:
+        shutter_mode = 'a'
+        open_command = '1'
+        self.__run_command(mode=shutter_mode, command=open_command)
+        print(self.__read_message())
+        if self.__read_message() == 'OPEN':
+            return True
 
-    def shutter_off(self):
-        self.run_command(mode='a', command='0')
+    def shutter_off(self) -> bool:
+        shutter_mode = 'a'
+        close_command = '0'
+        self.__run_command(mode=shutter_mode, command=close_command)
+        print(self.__read_message())
+        if self.__read_message() == 'CLOSE':
+            return True
 
-
-    def run_command(self, mode: str, command: str) -> bool:
+    def __run_command(self, mode: str, command: str) -> None:
         data = mode + command + ';'
         self.write(data.encode('utf-8'))
 
-    def read_command(self):
+    def __read_message(self) -> str:
         return self.readline().decode()
+
+    def get_status(self):
+        return self.__read_message()
 
 
 if __name__ == '__main__':
-    shutter1 = Periphaerals('/dev/tty.usbmodem1101')
+    com_name = '/dev/tty.usbmodem101'
+    shutter1 = Periphaerals(port=com_name)
 
-
+    print(shutter1.shutter_on())
+    time.sleep(1)
+    print(shutter1.shutter_off())
+    # print(shutter1.get_status())

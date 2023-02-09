@@ -1,4 +1,4 @@
-int shutter = 2;
+int shutter = 3;
 
 void setup() {
   Serial.begin(19200);
@@ -22,7 +22,7 @@ void loop() {
           digitalWrite(shutter, LOW);
           Serial.println("CLOSE");
         } else {
-          Serial.println("False")
+          Serial.println("False");
         }
         break;
     }
