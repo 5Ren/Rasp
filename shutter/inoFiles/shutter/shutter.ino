@@ -1,4 +1,4 @@
-int shutter = 3;
+int shutter = 2;
 
 void setup() {
   Serial.begin(19200);

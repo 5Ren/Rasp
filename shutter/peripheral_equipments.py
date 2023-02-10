@@ -3,7 +3,7 @@ import time
 
 class Periphaerals(serial.Serial):
     def __init__(self, port: str) -> None:
-        baudrate = 19200
+        baudrate = 9600
         try:
             super().__init__(port, baudrate)
             time.sleep(2)
