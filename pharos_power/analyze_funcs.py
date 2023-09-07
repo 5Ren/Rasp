@@ -8,7 +8,7 @@ from scipy.signal import butter, lfilter
 def plot_fft(signal, time_data, ir_or_green):
     sample_numbers = signal.shape[0]
 
-    # fft
+    # do_fft.py
     # ---------------------------------------------------------
     large_f = np.fft.fft(signal)
     fft_freq = np.fft.fftfreq(sample_numbers, d=time_data)

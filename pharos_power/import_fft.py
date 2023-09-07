@@ -119,13 +119,13 @@ for min_range in min_list:
     # fft_data_size = int(2**math.floor(math.log2(window_size)))
     # print(f'{fft_data_size=}')
     # signal_freq = signal_freq[:fft_data_size]
-    # print(f'fft {signal_freq.shape=}')
-    # # fft
+    # print(f'do_fft.py {signal_freq.shape=}')
+    # # do_fft.py
     # # ---------------------------------------------------------
     # sample_numbers = signal_freq.shape[0]
     #
-    # large_f = np.fft.fft(signal_freq)
-    # fft_freq = np.fft.fftfreq(sample_numbers, d=dt)
+    # large_f = np.do_fft.py.do_fft.py(signal_freq)
+    # fft_freq = np.do_fft.py.fftfreq(sample_numbers, d=dt)
     #
     # fig2, ax = plt.subplots(nrows=3, figsize=(8, 12))
     # fig2.suptitle(f'FFT ({base_name})', fontsize=16)
