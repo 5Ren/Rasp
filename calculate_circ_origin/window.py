@@ -1,50 +1,15 @@
 import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+import matplotlib.patches as patches
 import numpy as np
 import winsound
 from tkinter import messagebox
 import threading
 
-font_of_button = ("Helve", "12", "bold")
-font_of_label = ("Helve", "15", "bold")
 
-
-def calculate_circ_origin(coordinate_list) -> list:
-    """
-    3点の座標から、円の中心を求める関数
-
-    Parameters
-    ----------
-    coordinate_list
-        2次元配列 リスト
-        [[x1, y1], [x2, y2], [x3, y3]]
-        ※ Unit: なんでも
-    Returns
-    -------
-        座標情報のリスト
-        [x座標, y座標, 半径]
-    """
-
-    if sum(len(v) for v in coordinate_list) != 6:
-        print("要素数が足りません")
-        return [0, 0, 0]
-
-    alpha = coordinate_list[0][0] - coordinate_list[1][0]  # x1 - x2
-    beta = coordinate_list[0][1] - coordinate_list[1][1]  # y1 - y2
-    gamma = coordinate_list[1][0] - coordinate_list[2][0]  # x2 - x3
-    delta = coordinate_list[1][1] - coordinate_list[2][1]  # y2 - y3
-    bi_ad_bg = 2 * (alpha * delta - beta * gamma)
-
-    X_1 = coordinate_list[0][0] ** 2 + coordinate_list[0][1] ** 2  # x1^2 + y1^2
-    X_2 = coordinate_list[1][0] ** 2 + coordinate_list[1][1] ** 2  # x2^2 + y2^2
-    X_3 = coordinate_list[2][0] ** 2 + coordinate_list[2][1] ** 2  # x3^2 + y2^2
-
-    origin_x = (delta * (X_1 - X_2) - beta * (X_2 - X_3)) / bi_ad_bg
-    origin_y = (-1 * gamma * (X_1 - X_2) + alpha * (X_2 - X_3)) / bi_ad_bg
-    radius = np.sqrt((coordinate_list[0][0] - origin_x) ** 2 + (coordinate_list[0][1] - origin_y) ** 2)
-    return [origin_x, origin_y, radius]
-
+def is_int(i):
+    return type(i) is int
 
 
 class CalcuCenterWindow:
@@ -53,35 +18,41 @@ class CalcuCenterWindow:
     # stage1 = interface.get_stage_obj()
     # scanner1 = interface.get_scanner_obj()
     laser_flg: bool = False
+    one_pulse = 2
 
     # レーザーオンオフフラグ
     # laser_on_sound = r'./pharos/libs/music/eva (mp3cut.net).wav'
-    one_pulse = 2
-
-    # ステージの1パルス移動量[um]
     font_of_button = ("Helve", "15", "bold")
 
-    # フォント
+    # ステージの1パルス移動量[um]
     font_of_label = ("Helve", "12", "bold")
+
+    # フォント
     frame_laser = None
+    frame_coordinate_input = None
 
     # フレーム
-    frame_coordinate_input = None
     frame_graph = None
-    first_point_x_entry = None
+    first_x_entry = None
 
     # エントリー
-    first_point_y_entry = None
-    second_point_x_entry = None
-    second_point_y_entry = None
-    third_point_x_entry = None
-    third_point_y_entry = None
+    first_y_entry = None
+    second_x_entry = None
+    second_y_entry = None
+    third_x_entry = None
+    third_y_entry = None
 
     # グラフ描画
     ax = None
     fig_canvas = None
     toolbar = None
 
+    # 3 point の初期位置
+    position_list = None
+    circle_info_list = None
+
+
+    # 円の情報
     def __init__(self):
         # ステージの速度設定
         # stage_speed_s = 75
@@ -91,7 +62,14 @@ class CalcuCenterWindow:
         #     stage_speed_s, stage_speed_f, stage_speed_r
         # )
 
+        # 円の情報の初期化
+        self.position_list = [[1] * 2] * 3
+        self.circle_info_list = [0] * 3
+
+        # ウィンドウ表示
         self.create_window()
+
+        self.vcmd = self.register(self.onValidate)
 
     def laser_on(self):
         yes_or_no = messagebox.askyesno('安全確認',
@@ -140,19 +118,70 @@ class CalcuCenterWindow:
         print('> Delete Window')
 
     def button_click(self):
-        # 表示するデータの作成
-        x = np.arange(-np.pi, np.pi, 0.1)
-        y = np.sin(x)
+        # エントリーの中の情報を取ってくる
+        self.get_all_entry()
+
+        # 計算する
+        self.calculate_circ_origin()
+
         # グラフの描画
-        self.ax.plot(x, y)
+        c = patches.Circle(xy=(self.circle_info_list[0], self.circle_info_list[1]), radius=self.circle_info_list[2],
+                           fc='c', ec='r')
+        self.ax.add_patch(c)
         # 表示
         self.fig_canvas.draw()
+
+    def get_all_entry(self):
+        """
+        全部のエントリーの値を取ってくるんだけど，，
+        キモい
+
+        :return:
+        """
+        self.position_list[0][0] = self.first_x_entry.get() if is_int(self.first_x_entry) else 0
+        self.position_list[0][1] = self.first_y_entry.get() if is_int(self.first_y_entry) else 0
+        self.position_list[1][0] = self.second_x_entry.get() if is_int(self.second_x_entry) else 0
+        self.position_list[1][1] = self.second_y_entry.get() if is_int(self.second_y_entry) else 0
+        self.position_list[2][0] = self.third_x_entry.get() if is_int(self.third_x_entry) else 0
+        self.position_list[2][1] = self.third_y_entry.get() if is_int(self.third_y_entry) else 0
+
+    def calculate_circ_origin(self):
+        """
+        3点の座標から、円の中心を求める関数
+
+        Parameters
+        ----------
+        Returns
+        -------
+            座標情報のリスト
+            [x座標, y座標, 半径]
+        """
+
+        coordinate_list = self.position_list
+
+        alpha = coordinate_list[0][0] - coordinate_list[1][0]  # x1 - x2
+        beta = coordinate_list[0][1] - coordinate_list[1][1]  # y1 - y2
+        gamma = coordinate_list[1][0] - coordinate_list[2][0]  # x2 - x3
+        delta = coordinate_list[1][1] - coordinate_list[2][1]  # y2 - y3
+        bi_ad_bg = 2 * (alpha * delta - beta * gamma)
+
+        X_1 = coordinate_list[0][0] ** 2 + coordinate_list[0][1] ** 2  # x1^2 + y1^2
+        X_2 = coordinate_list[1][0] ** 2 + coordinate_list[1][1] ** 2  # x2^2 + y2^2
+        X_3 = coordinate_list[2][0] ** 2 + coordinate_list[2][1] ** 2  # x3^2 + y2^2
+
+        try:
+            origin_x = (delta * (X_1 - X_2) - beta * (X_2 - X_3)) / bi_ad_bg
+            origin_y = (-1 * gamma * (X_1 - X_2) + alpha * (X_2 - X_3)) / bi_ad_bg
+            radius = np.sqrt((coordinate_list[0][0] - origin_x) ** 2 + (coordinate_list[0][1] - origin_y) ** 2)
+
+            # 代入
+            self.circle_info_list = [origin_x, origin_y, radius]
 
     def create_window(self):
         # rootメインウィンドウの設定 ################################################
         root = tk.Tk()
         root.title("Frame")
-        root.geometry("600x500")
+        root.geometry("900x500")
         font_of_button = self.font_of_button
         font_of_label = self.font_of_label
         #########################################################################
@@ -194,7 +223,8 @@ class CalcuCenterWindow:
         third_point_x_entry = tk.Entry(frame_coordinate_input, width=10, justify=tk.RIGHT, font=font_of_button)
         third_point_y_entry = tk.Entry(frame_coordinate_input, width=10, justify=tk.RIGHT, font=font_of_button)
 
-        calculate_button = tk.Button(frame_coordinate_input, text='CALCULATE', font=font_of_button)
+        calculate_button = tk.Button(frame_coordinate_input, text='CALCULATE', font=font_of_button,
+                                     compound=self.button_click())
         move_stage_button = tk.Button(frame_coordinate_input, text='MOVE STAGE', font=font_of_button)
 
         # ラベルとボタンの配置
@@ -233,9 +263,9 @@ class CalcuCenterWindow:
         self.fig_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         # ボタンの作成
-        button = tk.Button(root, text="Draw Graph", command=self.button_click)
-        # 配置
-        button.pack(side=tk.BOTTOM)
+        # button = tk.Button(root, text="Draw Graph", command=self.button_click)
+        # # 配置
+        # button.pack(side=tk.BOTTOM)
         #########################################################################
 
         # ウィジェットの配置 #######################################################
