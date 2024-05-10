@@ -11,7 +11,7 @@ squares = []
 scale_factor = 1000 // 200   # [nm/pix] ピクセルからナノメートルへのスケールファクター
 square_side_length_nm = 2000
 square_side_length_pix = square_side_length_nm // scale_factor  # 正方形の辺の長さ
-directory_path = r'ITO-x10'  # ディレクトリのパスを指定してください
+directory_path = r'ITO-Old-x10'  # ディレクトリのパスを指定してください
 
 # マウスイベント時に処理を行う
 def draw_circle(event, x, y, flags, param):
@@ -31,12 +31,13 @@ def draw_circle(event, x, y, flags, param):
 
 # 指定したディレクトリ内の全ての画像ファイルでプログラムを実行
 for filename in os.listdir(directory_path):
-    if filename.endswith(".bmp"):  # 画像ファイルの拡張子を指定
+    if filename.endswith(".jpg"):  # 画像ファイルの拡張子を指定
         image_path = os.path.join(directory_path, filename)
 
         # 画像の読み込み
         original_img = cv2.imread(image_path)
-        original_img = cv2.resize(original_img, (original_img.shape[1] // 2, original_img.shape[0] // 2))  # 画像のサイズを半分にする
+        # original_img = cv2.resize(original_img, (original_img.shape[1] // 2, original_img.shape[0] // 2))  # 画像のサイズを半分にする
+        original_img = cv2.resize(original_img, (original_img.shape[1] // 1, original_img.shape[0] // 1))  # 画像のサイズを半分にする
         img = original_img.copy()
 
         # 画像上に5つの重ならない正方形を描く
