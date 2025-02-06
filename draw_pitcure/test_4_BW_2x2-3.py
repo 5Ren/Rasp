@@ -109,7 +109,7 @@ _, binary_image = cv2.threshold(image_blurred, 127, 255, cv2.THRESH_BINARY)
 y_coords, x_coords = np.where(binary_image == 0)
 
 # スケーリングパラメータ
-y_length_microns = 20000  # 20000μm
+y_length_microns = 30000  # 20000μm
 resolution_micron_per_pix = 10  # 10μm/pix
 
 # 新しい画像サイズ計算
