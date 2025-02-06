@@ -1,10 +1,8 @@
-import math
 import os
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy.fft
 import warnings
 
 import analyze_funcs
@@ -15,7 +13,7 @@ warnings.filterwarnings('ignore', category=matplotlib.MatplotlibDeprecationWarni
 dt = 0.01  # サンプル周期[s]
 
 # Cloggerで書き出したcsvを入力に与える
-file_path = r'./Pharos出力測定/NL_IR/NL_IR_20230211.csv'
+file_path = r'Pharos出力測定/NL_IR/NL_IR_20230211.csv'
 # ファイル名
 base_name = os.path.basename(file_path).split('.')[0]
 # データの読み込み

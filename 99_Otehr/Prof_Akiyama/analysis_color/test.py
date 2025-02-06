@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # 画像を読み込む
-image_path = "./color.bmp"  # 画像のパス
+image_path = "color.bmp"  # 画像のパス
 image = cv2.imread(image_path)
 
 if image is None:

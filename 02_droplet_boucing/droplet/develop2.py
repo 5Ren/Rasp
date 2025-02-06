@@ -5,7 +5,7 @@ from scipy.signal import find_peaks
 
 # CSVファイルの読み込み
 data = np.genfromtxt(
-    r"./2ul_40mm_1-9_n1_analysed_6.csv",
+    r"2ul_40mm_1-9_n1_analysed_6.csv",
     delimiter=',')
 
 # xとyの配列にデータを分割

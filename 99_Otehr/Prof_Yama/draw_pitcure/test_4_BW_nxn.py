@@ -39,7 +39,7 @@ def perform_edge_detection(region_image, side_length):
 # -------------------------------------------------
 # 画像の読み込み、前処理、および二値化
 # -------------------------------------------------
-image_path = "./image_files/25-1-27_cosun_white.jpg"
+image_path = "image_files/25-1-27_cosun_white.jpg"
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 if image is None:
     print("画像の読み込みに失敗しました。")

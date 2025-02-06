@@ -68,7 +68,7 @@ def plot_edge_segments(ax, edge_segments, resolution_micron_per_pix):
 
 
 # 画像の読み込み
-image_path = "./image_files/25-1-27_cosun_white.jpg"
+image_path = "image_files/25-1-27_cosun_white.jpg"
 
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 if image is None:
@@ -266,7 +266,7 @@ for row in range(4):
 plt.tight_layout()
 
 # プロットをファイルとして保存
-output_dir = "./plots"
+output_dir = "plots"
 os.makedirs(output_dir, exist_ok=True)
 plot_path = os.path.join(output_dir, "edge_detection_results.png")
 plt.savefig(plot_path)

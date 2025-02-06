@@ -57,5 +57,5 @@ def txt_to_excel(directory):
 
 
 # 使用例
-directory_path = r'./ITO_slit5nm'  # ここに対象ディレクトリのパスを入力
+directory_path = r'ITO_slit5nm'  # ここに対象ディレクトリのパスを入力
 txt_to_excel(directory_path)

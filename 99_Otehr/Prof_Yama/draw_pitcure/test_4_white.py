@@ -1,38 +1,23 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.interpolate import griddata
 import random
-
-import os
+from matplotlib import cm
 
 # 画像の読み込み
-image_path = "./image_files/25-1-27_cosun_black.jpg"
+image_path = "image_files/25-1-27_kaitan_white.jpg"  # ここにファイルパスを指定
 
 image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 if image is None:
     print("画像の読み込みに失敗しました。")
     exit()
 
-# ファイル名の最後のアンダーバー以降を取得
-filename = os.path.basename(image_path)
-file_suffix = filename.split("_")[-1].split(".")[0]  # 拡張子を除いた最後の部分
-
-# ガウシアンフィルターの強度を設定（ファイル名に応じて変更）
-if file_suffix.lower() == "black":
-    gaussian_kernel_size = (9, 9)
-    gaussian_sigma = 1.0
-elif file_suffix.lower() == "white":
-    gaussian_kernel_size = (5, 5)
-    gaussian_sigma = 1.0
-else:
-    gaussian_kernel_size = (7, 7)  # デフォルト
-    gaussian_sigma = 1.0
-
 # 画像を縦横２倍にリサイズ（補間方法を変更）
 image_resized = cv2.resize(image, None, fx=2, fy=2, interpolation=cv2.INTER_NEAREST)
 
 # ガウシアンフィルターを適用
-image_blurred = cv2.GaussianBlur(image_resized, gaussian_kernel_size, gaussian_sigma)
+image_blurred = cv2.GaussianBlur(image_resized, (5, 5), 0)
 
 # 外側10画素分を消去（輪郭を削る）
 image_blurred[:10, :] = 255  # 上部
@@ -124,3 +109,4 @@ axes[2].set_ylim(-y_new_size * resolution_micron_per_pix // 2, y_new_size * reso
 axes[2].set_aspect('equal')
 
 plt.show()
+
