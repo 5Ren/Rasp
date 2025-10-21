@@ -1,8 +1,4 @@
-import numpy as np
 import matplotlib.pyplot as plt
-import cv2
-import random
-import os
 import qrcode
 
 from pharos import DeviceManager
@@ -15,7 +11,6 @@ stage = manager.get_stage_obj()
 scanner = manager.get_scanner_obj()
 
 processing = ProcessingWrapper(stage_obj=stage, scanner_obj=scanner)
-
 
 """
 千鳥配置をパーカッションで行うプログラム
@@ -58,6 +53,7 @@ gate_off_delay = 380
 # mark delay jump delay
 jump_delay = 400
 mark_delay = 400
+
 
 # スキャナの補正パターン
 # scanner.set_calibration(file_name='230705_f67.TXT')
@@ -163,7 +159,6 @@ def algorithm():
         scanner_x_position_um = coord[0] * shot_pitch_um
         scanner_y_position_um = coord[1] * shot_pitch_um
 
-
         scanner.jump_to_absolute(x_um=scanner_x_position_um,
                                  y_um=scanner_y_position_um)
 
@@ -174,6 +169,7 @@ def algorithm():
 
     scanner.list_close()
     scanner.wait_for_complete()
+
 
 # 加工アルゴリズム
 processing.run_processing(algorithm)
