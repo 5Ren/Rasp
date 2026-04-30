@@ -10,13 +10,13 @@ squares = []
 
 # [nm/pix]（オリジナル画像） ピクセルからナノメートルへのスケールファクター
 # 1000 nm を 200 pix 分として考えるなら 5 nm/pix という想定
-scale_factor = 1000 // 200
+scale_factor = 100 // 100
 
-square_side_length_nm = 4000
+square_side_length_nm = 850
 # オリジナル画像上での正方形のピクセル数（2000 nm → 400 pix）
 square_side_length_pix_original = square_side_length_nm // scale_factor
 
-directory_path = r'1001_x10'  # ディレクトリのパスを指定してください
+directory_path = r'2026_MNE/0428_05J'  # ディレクトリのパスを指定してください
 
 def draw_circle(event, x, y, flags, param):
     """
@@ -52,8 +52,8 @@ def draw_circle(event, x, y, flags, param):
                 break
 
 # 画面サイズの取得（任意の固定値でOK）
-screen_width = 1920
-screen_height = 1080
+screen_width = 1920 * 1.1
+screen_height = 1080 * 1.1
 
 # BMP拡張子のファイルを処理
 for filename in os.listdir(directory_path):
