@@ -10,9 +10,9 @@ squares = []
 
 # [nm/pix]（オリジナル画像）
 # Set Scale: distance=200, known=1000 nm → 1 px = 1000 / 200 = 5 nm
-scale_factor_nm_per_pix = 1000.0 / 200.0  # = 5.0
+scale_factor_nm_per_pix = 100.0 / 200.0  # = 5.0
 
-directory_path = r'00_data_1shot'  # ディレクトリのパスを指定してください
+directory_path = r"C:\Users\YamaLab-38\Downloads\PLD_beads_c2"  # ディレクトリのパスを指定してください
 
 
 def draw_circle(event, x, y, flags, param):
